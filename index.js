@@ -1,36 +1,36 @@
 
 
-// {
-//   type: 'ADD_TODO',
-//   todo: {
-//     id: 0,
-//     name: 'Learn Redux',
-//     complete: false
-//   }
-// }
+{
+  type: 'ADD_TODO',
+  todo: {
+    id: 0,
+    name: 'Learn Redux',
+    complete: false
+  }
+}
 
-// {
-//   type: 'REMOVE_TODO',
-//   id: 0
-// }
+{
+  type: 'REMOVE_TODO',
+  id: 0
+}
 
-// {
-//   type: 'TOGGLE_TODO',
-//   id: 0
-// }
+{
+  type: 'TOGGLE_TODO',
+  id: 0
+}
 
-// {
-//   type: 'ADD_GOAL',
-//   goal: {
-//     id: 0,
-//     name: 'Run a Marathon'
-//   }
-// }
+{
+  type: 'ADD_GOAL',
+  goal: {
+    id: 0,
+    name: 'Run a Marathon'
+  }
+}
 
-// {
-//   type: 'REMOVE_GOAL',
-//   id: 0
-// }
+{
+  type: 'REMOVE_GOAL',
+  id: 0
+}
 
 /*
   Characteristics of a Pure Function
@@ -39,6 +39,7 @@
   3) Never produce any side effects.
 */
 
+// Reducer function
 function todos (state = [], action) {
   if (action.type === 'ADD_TODO') {
     return state.concat([action.todo])
@@ -47,12 +48,12 @@ function todos (state = [], action) {
   return state
 }
 
-function createStore () {
+function createStore (reducer) {
   // The store should have four parts
   // 1. The state
-  // 2. Get the state 
-  // 3. Listen to changes on the state
-  // 4. Update the state
+  // 2. Get the state (getState)
+  // 3. Listen to changes on the state (subscribe)
+  // 4. Update the state (dispatch)
 
   let state
   let listeners = []
@@ -60,21 +61,25 @@ function createStore () {
   const getState = () => state
 
   const subscribe = (listener) => {
-    lesteners.push(listener)
+    listeners.push(listener)
     return () => {
-      lesteners = lesteners.filter((l) => l !== listener)
+      listeners = listeners.filter((l) => l !== listener)
     }
+  }
+
+  const dispatch = (action) => {
+    // call dispatch
+    state = reducer(state, action)
+
+    // loop over listeners and invoke them
+    listeners.forEach((listener) => listener())
   }
 
   return {
     getState,
-    subscribe
+    subscribe,
+    dispatch
   }
 }
 
-// const store = createStore()
-// const unsubscribe = store.subscribe(() => {
-
-// })
-
-// unsubscribe()
+const store = createStore(todos)
