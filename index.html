@@ -2,6 +2,7 @@
 <html>
 <head>
   <title>Todos/Goals</title>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/redux/3.7.2/redux.min.js'></script>
 </head>
 <body>
   <div>
@@ -35,39 +36,39 @@
 
 
     // Library code
-    function createStore (reducer) {
-      // The store should have four parts
-      // 1. The state
-      // 2. Get the state (getState)
-      // 3. Listen to changes on the state (subscribe)
-      // 4. Update the state (dispatch)
+    // function createStore (reducer) {
+    //   // The store should have four parts
+    //   // 1. The state
+    //   // 2. Get the state (getState)
+    //   // 3. Listen to changes on the state (subscribe)
+    //   // 4. Update the state (dispatch)
 
-      let state
-      let listeners = []
+    //   let state
+    //   let listeners = []
 
-      const getState = () => state
+    //   const getState = () => state
 
-      const subscribe = (listener) => {
-        listeners.push(listener)
-        return () => {
-          listeners = listeners.filter((l) => l !== listener)
-        }
-      }
+    //   const subscribe = (listener) => {
+    //     listeners.push(listener)
+    //     return () => {
+    //       listeners = listeners.filter((l) => l !== listener)
+    //     }
+    //   }
 
-      const dispatch = (action) => {
-        // call dispatch
-        state = reducer(state, action)
+    //   const dispatch = (action) => {
+    //     // call dispatch
+    //     state = reducer(state, action)
 
-        // loop over listeners and invoke them
-        listeners.forEach((listener) => listener())
-      }
+    //     // loop over listeners and invoke them
+    //     listeners.forEach((listener) => listener())
+    //   }
 
-      return {
-        getState,
-        subscribe,
-        dispatch
-      }
-    }
+    //   return {
+    //     getState,
+    //     subscribe,
+    //     dispatch
+    //   }
+    // }
 
     // App code
     const ADD_TODO = 'ADD_TODO'
@@ -141,14 +142,18 @@
       }
     }
 
-    function app (state = {}, action) {
-      return {
-        todos: todos(state.todos, action),
-        goals: goals(state.goals, action)
-      }
-    }
-
-    const store = createStore(app)
+    // function app (state = {}, action) {
+    //   return {
+    //     todos: todos(state.todos, action),
+    //     goals: goals(state.goals, action)
+    //   }
+    // }
+    // const store = createStore(app)
+    
+    const store = Redux.createStore(Redux.combineReducers({
+      todos,
+      goals
+    }))
 
     store.subscribe(() => {
       // console.log('The new state is: ', store.getState())
@@ -160,40 +165,6 @@
       goals.forEach(addGoalToDOM)
       todos.forEach(addTodoToDOM)
     })
-
-    // store.dispatch(addTodoAction({
-    //   id: 0,
-    //   name: 'Walk the dog',
-    //   complete: false,
-    // }))
-
-    // store.dispatch(addTodoAction({
-    //   id: 1,
-    //   name: 'Wash the car',
-    //   complete: false,
-    // }))
-
-    // store.dispatch(addTodoAction({
-    //   id: 2,
-    //   name: 'Go to the gym',
-    //   complete: true,
-    // }))
-
-    // store.dispatch(removeTodoAction(1))
-
-    // store.dispatch(toggleTodoAction(0))
-
-    // store.dispatch(addGoalAction({
-    //   id: 0,
-    //   name: 'Learn Redux'
-    // }))
-
-    // store.dispatch(addGoalAction({
-    //   id: 1,
-    //   name: 'Lose 20 pounds'
-    // }))
-
-    // store.dispatch(removeGoalAction(0))
 
     // DOM code
     function addTodoToDOM (todo) {
