@@ -162,6 +162,17 @@
       }
     }
 
+    function handleInitialData () {
+      return (dispatch) => {
+        return Promise.all([
+          API.fetchTodos(),
+          API.fetchGoals()
+        ]).then(([ todos, goals ]) => {
+          dispatch(receiveDataAction(todos, goals))
+        })
+      }
+    }
+
     function handleDeleteGoal (goal) {
       return (dispatch) => {
         dispatch(removeGoalAction(goal.id))
@@ -487,12 +498,7 @@
       componentDidMount () {
         const { store } = this.props
 
-        Promise.all([
-          API.fetchTodos(),
-          API.fetchGoals()
-        ]).then(([ todos, goals ]) => {
-          store.dispatch(receiveDataAction(todos, goals))
-        })
+        store.dispatch(handleInitialData())
 
         store.subscribe(() => this.forceUpdate())
       }
